@@ -40,7 +40,7 @@ body {
 
 .hero {
     min-height: 100vh;
-    background-image: url('/img/back.jpg');
+    background-image: url('img/back.jpg');
     background-repeat: no-repeat;
     background-size: contain;  /*или cover  */
     background-position: center;
@@ -191,7 +191,7 @@ header.container {
 }
 .photos {
     width: 100%;
-    background-image: url('/img/back copy.jpg');
+    background-image: url('img/back copy.jpg');
     background-position: top 30px center;  /* Сдвигаем вниз на 30px */
     background-repeat: no-repeat;
     padding: 0;
