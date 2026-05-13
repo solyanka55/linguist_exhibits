@@ -111,7 +111,7 @@ img {
 }
 
 .hero--info p{
-    font-family: Impact,'Anton',;
+    font-family: 'Impact','Anton';
     font-weight: 50;
     font-size: 23px;
     margin-left: 20px;
@@ -356,7 +356,7 @@ right-column_backpack{
     width: 100px;
     font-weight: 600;
     color: #58799c;
-    font-family: Impact,'Anton', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family: 'Impact','Anton', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 20px;
     font-weight: 200;
     letter-spacing: 0.5px;
@@ -371,7 +371,7 @@ right-column_backpack{
     width: 100px;
     font-weight: 600;
     color: #58799c;
-    font-family: Impact,'Anton', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family: 'Impact','Anton', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 20px;
     font-weight: 200;
     letter-spacing: 0.5px;
@@ -388,7 +388,7 @@ right-column_backpack{
 .audio-player{
     margin-top: 15px;
     color:#58799c;
-    font-family: Impact, 'Anton', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family: 'Impact', 'Anton', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 20px;
     font-weight: 200;
     letter-spacing: 0.5px;
