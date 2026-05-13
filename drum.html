@@ -1,0 +1,408 @@
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+        <script type="importmap">
+            {
+                "imports": {
+                    "@google/model-viewer": "https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.js"
+                }
+            }
+        </script>
+        <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Музей туризма</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="/css/main.css">
+        <link rel="stylesheet" href="/css/navigation.css">
+        <link rel="stylesheet" href="/css/hotspot.css">
+        <link rel="stylesheet" href="/css/adaptation.css">
+    </head>
+    <body>
+    <!-- Оверлей для затемнения фона -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Боковое меню -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <div class="mobile-menu-logo">
+                <img src="img/logo3.png" alt="">
+            </div>
+            <button class="mobile-menu-close" id="closeMenuBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="mobile-nav">
+            <ul>
+                <li><a href="#">Главная</a></li>
+                <li class="active">
+                    <a href="#" class="has-dropdown">Наши экспонаты <i class="fas fa-chevron-down"></i></a>
+                    <ul class="mobile-dropdown">
+                        <li><a href="main.html">Фрагмент амфоры</a></li>
+                        <li><a href="umbrella.html">Японский зонт</a></li>
+                        <li><a href="#1">Пионерский барабан</a></li>
+                        <li><a href="backpack.html">Снаряжение для похода</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Новости</a></li>
+                <li><a href="#">История школы</a></li>
+                <li class="btn"><a href="#">Контакты</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="wrapper">
+        <header class="container">
+            <button class="mobile-menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span class="logo">
+                <img src="img/logo3.png" alt="">
+            </span>
+            <nav>
+                <ul>
+                    <li><a href="#">Главная</a></li>
+                    <li class="active"><a href="#">Наши экспонаты</a>
+                        <ul class="dropdown">
+                            <li><a href="amphora.html">Фрагмент амфоры</a></li>
+                            <li><a href="umbrella.html">Японский зонт</a></li>
+                            <li><a href="#1">Пионерский барабан</a></li>
+                            <li><a href="backpack.html">Снаряжение для похода</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Новости</a></li>
+                    <li><a href="#">История школы</a></li>
+                    <li class="btn"><a href="#">Контакты</a></li>
+                </ul>
+            </nav>
+        </header>
+            
+            <div class="hero">
+                <div class="hero--info">
+                    <h2>Музей туризма школы "Лингвист"</h2>
+                    <h1>Пионерский барабан<span class="date"></span></h1>
+                    <p style="margin-right: -290px;">А теперь перенесёмся в мир детского туризма и знаменитых пионерских лагерей. Один из самых известных лагерей нашей страны — МДЦ «Артек» — отметил свой вековой юбилей. Сейчас это один из крупнейших в мире комплексов детского отдыха. Об истории знаменитого лагеря СССР рассказывают экспонаты нашей экспозиции.</p>
+                </div>
+                <img src="img/img_drum.png" alt="" class="drum">
+                <div class="image-wrapper3">
+                    <img src="img/img_drum.png" alt="" class="drum1">
+                </div>
+            </div>
+            
+            <section class="description" style="background-color: #eee7d7;">
+                    <div class="container">
+                        <h2 style="color: #58799c;">3D-модель барабана</h2>
+                        
+                        <!-- ДВЕ КОЛОНКИ РЯДОМ -->
+                        <div class="model-and-info">
+                            <!-- Левая колонка: 3D модель -->
+                            <div class="model_3D">
+                                <model-viewer 
+                                    src="3d-models/drum.glb" 
+                                    auto-rotate
+                                    auto-rotate-delay="0"
+                                    rotation-per-second="15deg"
+                                    camera-controls
+                                    touch-action="pan-y"
+                                    interaction-prompt="auto"
+                                    exposure="1"
+                                    shadow-intensity="0.5">
+                                    <div class="progress-bar hide" slot="progress-bar">
+                                        <div class="update-bar"></div>
+                                    </div>
+                                </model-viewer>
+                            </div>
+                            <div class="right-column">
+                                <h2><i class="fas fa-info-circle"></i>  Об экспонате</h2>
+                                <div class="info-card">
+                                    
+                                    <div class="info-row">
+                                        <div class="info-label">Название</div>
+                                        <div class="info-value">Пионерский барабан</div>
+                                    </div>
+                                    <div class="info-row">
+                                        <div class="info-label">Датировка</div>
+                                        <div class="info-value">1960–1980-е гг., XX век</div>
+                                    </div>
+                                    <div class="info-row">
+                                        <div class="info-label">Где звучал</div>
+                                        <div class="info-value">На торжественных линейках, пионерских кострах, во время зарядки и вечерних построениях</div>
+                                    </div>
+                                    <div class="info-row">
+                                        <div class="info-label">Место в Артеке</div>
+                                        <div class="info-value">Главный лагерь СССР. Основан в 1925 году. Барабан здесь был главным инструментом</div>
+                                    </div>
+                                    <div class="info-row">
+                                        <div class="info-label">Почётный барабан</div>
+                                        <div class="info-value">Бить в барабан доверяли только лучшим пионерам — победителям отрядных конкурсов</div>
+                                    </div>
+                                    <div class="info-row">
+                                        <div class="info-label">Как носили</div>
+                                        <div class="info-value">Через плечо на брезентовом ремне; барабан висел на уровне пояса, чтобы удобно бить двумя палочками</div>
+                                    </div>
+                                    <div class="description-text">
+                                        <p><strong>История экспоната:</strong> Пионерский барабан — один из главных символов пионерского движения в СССР. В 1960–1980-х годах без него не обходился ни один отряд в лагере. На барабане играли двумя палочками  и его бой задавал ритм на торжественных линейках, парадах и пионерских кострах.</p>
+                                        <p style="margin-top: 12px;"><strong>Почему в музее туризма?</strong> Пионерские лагеря — часть культуры Крыма. Барабан был голосом лагеря: он звал на зарядку, строил отряды, задавал ритм линейкам и кострам. Для миллионов детей Крым начинался именно с барабанной дроби. Барабан — символ эпохи, когда наш полуостров был главной детской туристической столицей СССР.</p>
+                                    </div>
+                                    <div class="audio-player">
+                                        <div style="margin-bottom: 12px;">  <!-- ← Оборачиваем заголовок в div с отступом снизу -->
+                                            <i class="fas fa-headphones" style="margin-right: 8px;"></i>
+                                            <strong>Аудиогид</strong>
+                                        </div>
+                                        <audio controls style="width: 70%;">
+                                            <source src="audio/drum.mp3" type="audio/mpeg">
+                                        </audio>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Блок фотографий внизу -->
+                        <div class="photos">
+                            <h2>Фото музея</h2>
+                            <div class="exhibits-grid">
+                                <div class="exhibit-card">
+                                    <img src="img/idrum1.jpg" alt="">
+                                    <h3></h3>
+                                    <p></p>
+                                </div>
+                                <div class="exhibit-card">
+                                    <img src="img/idrum2.jpg" alt="">
+                                    <h3></h3>
+                                    <p></p>
+                                </div>
+                                <div class="exhibit-card">
+                                    <img src="img/idrum3.jpg" alt="">
+                                    <h3></h3>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hotspots"> <h2> <i class="fas fa-map-pin"></i>  Интерактивные детали</h2></div>
+                    <div class="hotspots-section">
+                        
+                        <p>  Нажми на любую деталь, чтобы узнать о ней подробнее</p>
+                        <div class="hotspots-grid" id="hotspotsGrid">
+                            <div class="hotspot-card" data-detail="body">
+                                <h4>Азбука барабана</h4>
+                                <p>Дробь — «Сбор!», короткие удары — «Отряд, стройся!», тихий бой — «Вечерняя тишина»</p>
+                            </div>
+                            <div class="hotspot-card" data-detail="neck">
+                                <h4>Лагерь-легенда</h4>
+                                <p>МДЦ «Артек» отметил вековой юбилей. Сейчас это один из крупнейших в мире комплексов детского отдыха. В советское время попасть в «Артек» считалось невероятной удачей — это был настоящий лагерь мечты, куда приезжали лучшие школьники со всей планеты.</p>
+                            </div>
+                            <div class="hotspot-card" data-detail="handles">
+                                <h4>80 стран без виз</h4>
+                                <p>В 1960–1980-х годах в «Артек» приезжали дети со всех союзных республик и даже из других стран, а именно: из США, Японии, Франции, Англии, Италии, Индии, Вьетнама, Кубы, стран Африки и Латинской Америки</p>
+                            </div>
+                            <div class="hotspot-card" data-detail="bottom">
+                                <h4>От Крыма до Монреаля</h4>
+                                <p>В 1980-х годах артековский барабан звучал не только у Чёрного моря. Делегации «Артека» выезжали за рубеж, на фестивали в Болгарию, ГДР и даже в Канаду. Барабан стал послом дружбы: его ритм объединял детей из социалистических стран и капиталистических — через простой и искренний язык ритма.</p>
+                            </div>
+                        </div>
+                        <div id="hotspotDetail">
+                            <span class="info-icon">ⓘ</span>
+                            <!-- Сюда будет подгружаться детальная информация -->
+                        </div>
+                    </div>
+
+                    <div class="info-card" style="text-align: center; background: #980B0D; color: white; margin-left: 30px; margin-right: 28px; border-radius: 16px;">
+                        <i class="fas fa-question-circle" style="font-size: 32px; margin-bottom: 12px;"></i>
+                        <h3 style="color: white; font-family: 'SC Jurere'; font-size: 23px; font-weight: 100;">А знаешь ли ты?</h3>
+                        <p style="font-family: 'Times New Roman', Times, serif; font-size: 20px; font-weight: 100; margin-top: 10px;">Почему пионерский барабан был именно красного цвета?</p>
+                        <div style="display: flex; gap: 12px; justify-content: center; margin-top: 16px; flex-wrap: wrap;">
+                            <span class="tag" style="background: rgba(255,255,255,0.2); cursor: pointer; padding: 8px 16px; border-radius: 40px;" onclick="alert('Попробуй еще раз! Красный выбрали не из-за костра.')">Цвет лагерного костра</span>
+                            <span class="tag" style="background: rgba(255,255,255,0.2); cursor: pointer; padding: 8px 16px; border-radius: 40px;" onclick="alert('🎉 Совершенно верно! Красный цвет повторял цвет пионерского галстука и знамени. Он символизировал революционные традиции, кровь, пролитую героями за счастливое детство, а также единство пионеров со всей страны. В «Артеке» красный барабан звучал особенно гордо — там собирались дети со всех концов СССР!')">Цвет галстука и знамени</span>
+                            <span class="tag" style="background: rgba(255,255,255,0.2); cursor: pointer; padding: 8px 16px; border-radius: 40px;" onclick="alert('Нет, красный цвет не связан с географией.')">Цвет заката над морем</span>
+                        </div>
+                    </div>
+                    
+                </div>
+                </section>
+        </div>
+                
+        <!-- Футер -->
+        <footer class="footer">
+            <div class="container">
+                <div>
+                    <h3>🏺 Музей туризма</h3>
+                    <p>Школа "Лингвист"<br>Часы работы: пн-пт 10:00–16:00</p>
+                </div>
+                <div>
+                    <h3>Контакты</h3>
+                    <p><i class="fas fa-envelope"></i> museum@school1.ru</p>
+                    <p><i class="fab fa-vk"></i> vk.com/school1_museum</p>
+                    <p><i class="fas fa-qrcode"></i> Сканируй QR-коды у экспонатов</p>
+                </div>
+                <div>
+                    <h3>Адрес</h3>
+                    <p>Улица Крымских партизан, 15</p>
+                </div>
+            </div>
+        </footer>
+
+<!-- Скрипты -->
+ <script>
+    // Мобильное меню
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
+    const closeMenuBtn = document.getElementById('closeMenuBtn');
+    
+    // Функция открытия меню
+    function openMenu() {
+        mobileMenu.classList.add('open');
+        menuOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Блокируем прокрутку фона
+    }
+    
+    // Функция закрытия меню
+    function closeMenu() {
+        mobileMenu.classList.remove('open');
+        menuOverlay.classList.remove('active');
+        document.body.style.overflow = ''; // Восстанавливаем прокрутку
+    }
+    
+    // Открытие по кнопке
+    if (menuBtn) {
+        menuBtn.addEventListener('click', openMenu);
+    }
+    
+    // Закрытие по кнопке закрытия
+    if (closeMenuBtn) {
+        closeMenuBtn.addEventListener('click', closeMenu);
+    }
+    
+    // Закрытие по клику на оверлей
+    if (menuOverlay) {
+        menuOverlay.addEventListener('click', closeMenu);
+    }
+    
+    // Закрытие по клавише Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+            closeMenu();
+        }
+    });
+    
+    // Раскрытие подменю в мобильной версии
+    const dropdownToggle = document.querySelector('.has-dropdown');
+    const mobileDropdown = document.querySelector('.mobile-dropdown');
+    
+    if (dropdownToggle && mobileDropdown) {
+        dropdownToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            mobileDropdown.classList.toggle('open');
+            const icon = this.querySelector('i');
+            if (icon) {
+                icon.style.transform = mobileDropdown.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0)';
+            }
+        });
+    }
+    
+    // Интерактивные точки (hotspots)
+    const hotspots = document.querySelectorAll('.hotspot-card');
+    const detailDiv = document.getElementById('hotspotDetail');
+    
+    if (hotspots.length > 0 && detailDiv) {
+        hotspots.forEach(hotspot => {
+            hotspot.addEventListener('click', function() {
+                hotspots.forEach(h => h.classList.remove('active'));
+                this.classList.add('active');
+                
+                const title = this.querySelector('h4').innerText;
+                const description = this.querySelector('p').innerHTML;
+                
+                detailDiv.style.display = 'block';
+                detailDiv.innerHTML = `
+                    <strong><i class="fas fa-info-circle"></i> ${title}</strong>
+                    <p style="margin-top: 8px;">${description}</p>
+                `;
+            });
+        });
+    }
+        const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <span class="close-modal">&times;</span>
+        <div class="modal-content">
+            <img class="modal-img" id="modalImg" src="" alt="">
+        </div>
+        <div class="modal-nav">
+            <button class="modal-nav-btn gallery-prev">❮</button>
+            <button class="modal-nav-btn gallery-next">❯</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalImg = document.getElementById('modalImg');
+    const closeModal = document.querySelector('.close-modal');
+    const galleryPrevBtn = document.querySelector('.gallery-prev');  // Переименовано
+    const galleryNextBtn = document.querySelector('.gallery-next');  // Переименовано
+
+    let currentPhotoIndex = 0;
+    const photos = document.querySelectorAll('.exhibit-card img');
+    const photoArray = Array.from(photos).map(img => img.src);
+
+    // Открытие фото при клике
+    if (photos.length > 0) {
+        photos.forEach((photo, index) => {
+            photo.addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentPhotoIndex = index;
+                modal.style.display = 'block';
+                modalImg.src = photoArray[currentPhotoIndex];
+                document.body.style.overflow = 'hidden';
+            });
+        });
+    }
+
+    // Закрытие модального окна
+    function closeModalFunc() {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    if (closeModal) {
+        closeModal.addEventListener('click', closeModalFunc);
+    }
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModalFunc();
+    });
+
+    // Навигация между фото
+    function showPrevPhoto() {
+        if (photoArray.length > 0) {
+            currentPhotoIndex = (currentPhotoIndex - 1 + photoArray.length) % photoArray.length;
+            modalImg.src = photoArray[currentPhotoIndex];
+        }
+    }
+
+    function showNextPhoto() {
+        if (photoArray.length > 0) {
+            currentPhotoIndex = (currentPhotoIndex + 1) % photoArray.length;
+            modalImg.src = photoArray[currentPhotoIndex];
+        }
+    }
+
+    if (galleryPrevBtn) {
+        galleryPrevBtn.addEventListener('click', showPrevPhoto);
+    }
+    if (galleryNextBtn) {
+        galleryNextBtn.addEventListener('click', showNextPhoto);
+    }
+
+    // Клавиатура для галереи
+    document.addEventListener('keydown', (e) => {
+        if (modal.style.display === 'block') {
+            if (e.key === 'Escape') closeModalFunc();
+            if (e.key === 'ArrowLeft') showPrevPhoto();
+            if (e.key === 'ArrowRight') showNextPhoto();
+        }
+    });
+</script>
+</body>
+</html>

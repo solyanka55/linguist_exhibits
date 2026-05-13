@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <script type="importmap">
+        {
+            "imports": {
+                "@google/model-viewer": "https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.js"
+            }
+        }
+    </script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Музей туризма</title>
+    <!-- Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/navigation.css">
+    <link rel="stylesheet" href="/css/hotspot.css">
+           <link rel="stylesheet" href="/css/adaptation.css">
+
+    
+    <style>
+        /* Дополнительные стили для элегантного переключения моделей */
+            .model_3D_1 {
+                position: relative;
+                width: 100vw;        /* вся ширина окна браузера */
+                max-width: 100%;     /* не выходит за пределы родителя */
+                height: 600px;
+                margin-left: calc(-50vw + 50%);  /* центрирование на всю ширину */
+                margin-right: calc(-50vw + 50%);
+                border-radius: 0;    /* убираем скругление для полной ширины */
+                overflow: hidden;
+                color:#eee7d7;
+                justify-content: center;  /* центрирование по горизонтали */
+                align-items: center;  
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                background: linear-gradient(135deg, #fff 0%, #cdc19e 100%);
+                margin-left: 0;
+                border-radius: 16px;
+            }
+
+            model-viewer {
+                width: 100%;
+                height: 100%;
+                transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            model-viewer.fade-out {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        /* Кнопки навигации */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            background: rgba(88, 121, 156, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 20;
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            background: #58799c;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .prev-btn {
+            left: 16px;
+        }
+
+        .next-btn {
+            right: 16px;
+        }
+
+        /* Счетчик моделей */
+        .model-counter {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-family: 'Segoe UI', sans-serif;
+            z-index: 20;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Индикаторы (точки) */
+        .model-dots {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 20;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dot:hover {
+            background: rgba(255,255,255,0.8);
+            transform: scale(1.2);
+        }
+
+        .dot.active {
+            background: #58799c;
+            width: 12px;
+            height: 12px;
+            box-shadow: 0 0 8px rgba(88,121,156,0.6);
+        }
+
+        /* Название текущей модели */
+        .model-name {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            z-index: 20;
+            font-weight: 500;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* Анимация пульсации для активной точки */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Стиль для загрузки модели */
+        model-viewer::part(default-progress-bar) {
+            background: linear-gradient(90deg, #58799c, #8ba9c9);
+            height: 3px;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            
+            .model-counter {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+            
+            .dot {
+                width: 8px;
+                height: 8px;
+            }
+            
+            .dot.active {
+                width: 10px;
+                height: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Оверлей для затемнения фона -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Боковое меню -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <div class="mobile-menu-logo">
+                <img src="img/logo3.png" alt="">
+            </div>
+            <button class="mobile-menu-close" id="closeMenuBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="mobile-nav">
+            <ul>
+                <li><a href="#">Главная</a></li>
+                <li class="active">
+                    <a href="#" class="has-dropdown">Наши экспонаты <i class="fas fa-chevron-down"></i></a>
+                    <ul class="mobile-dropdown">
+                        <li><a href="amphora.html">Фрагмент амфоры</a></li>
+                        <li><a href="umbrella.html">Японский зонт</a></li>
+                        <li><a href="drum.html">Пионерский барабан</a></li>
+                        <li><a href="#1">Снаряжение для похода</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Новости</a></li>
+                <li><a href="#">История школы</a></li>
+                <li class="btn"><a href="#">Контакты</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="wrapper">
+        <header class="container">
+            <button class="mobile-menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span class="logo">
+                <img src="img/logo3.png" alt="">
+            </span>
+            <nav>
+                <ul>
+                    <li><a href="#">Главная</a></li>
+                    <li class="active"><a href="#">Наши экспонаты</a>
+                        <ul class="dropdown">
+                            <li><a href="main.html">Фрагмент амфоры</a></li>
+                            <li><a href="umbrella.html">Японский зонт</a></li>
+                            <li><a href="drum.html">Пионерский барабан</a></li>
+                            <li><a href="#1">Снаряжение для похода</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Новости</a></li>
+                    <li><a href="#">История школы</a></li>
+                    <li class="btn"><a href="#">Контакты</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <div class="hero">
+            <div class="hero--info">
+                <h2>Музей туризма школы "Лингвист"</h2>
+                <h1>
+                    <span class="backpack_title">Снаряжение для</span>
+                    <span style="display: block; margin-left: -200px;">похода</span>
+                </h1>
+                <p>Но Крым привлекал не только пляжных отдыхающих. Многие стремились познать его красоту через походы. Неотъемлемыми атрибутами крымских походов были палатка и рюкзак.</p>
+            </div>
+            <img src="img/backpack.jpg" alt="" class="backpack">
+                <div class="image-wrapper2">
+                    <img src="img/backpack.jpg" alt="" class="backpack1">
+                </div>
+        </div>
+
+        <section class="description" style="background-color: #eee7d7;">
+            <div class="container">
+                <h2 style="color: #58799c;"><a>3D-модель снаряжения</a></h2>
+                
+                <!-- ДВЕ КОЛОНКИ РЯДОМ -->
+                <div class="model-and-info">
+                    <!-- Левая колонка: 3D модель с переключением -->
+                    <div class="model_3D_1">
+                        <!-- Название текущей модели -->
+                        <div class="model-name" id="modelName">
+                             Туристический рюкзак
+                        </div>
+                        
+                        <!-- Кнопки навигации -->
+                        <button class="nav-btn prev-btn" id="prevBtn">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="nav-btn next-btn" id="nextBtn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        
+                        <!-- Счетчик моделей -->
+                        <div class="model-counter">
+                            <span id="currentModel">1</span> / <span id="totalModels">3</span>
+                        </div>
+                        
+                        <!-- Индикаторы (точки) -->
+                        <div class="model-dots" id="modelDots"></div>
+                        
+                        <!-- 3D Viewer -->
+                        <model-viewer 
+                            id="model-viewer"
+                            src="3d-models/backpack.glb"
+                            auto-rotate
+                            auto-rotate-delay="0"
+                            rotation-per-second="15deg"
+                            camera-controls
+                            touch-action="pan-y"
+                            interaction-prompt="auto"
+                            exposure="1"
+                            shadow-intensity="0.5">
+                            <div class="progress-bar hide" slot="progress-bar">
+                                <div class="update-bar"></div>
+                            </div>
+                        </model-viewer>
+                    </div>
+                    
+                        <div class="right-column_backpack">
+                        <h2 style="color: #58799c;"><a><i class="fas fa-info-circle"></i>  Об экспонате</a></h2>
+                        <div class="info-card">
+                            <div class="info-row">
+                                <div class="info-label">Название</div>
+                                <div class="info-value">Туристическое снаряжение советского периода: рюкзак, палатка, походная посуда, гитара</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Датировка</div>
+                                <div class="info-value">1960-1990-е гг., XX век</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Рюкзак</div>
+                                <div class="info-value">«Колобок» — первый массовый советский рюкзак из брезента в 1930-е, затем «Абалакова» в 1950–1990-е: брезент, до 60 л</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Палатка</div>
+                                <div class="info-value">Брезентовая, 4-местная, вес ~12 кг</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Посуда</div>
+                                <div class="info-value">Вёдра, армейские котелки, кастрюли, алюминиевая фляга 0,75 л</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Походное меню</div>
+                                <div class="info-value">Сухофрукты, сухари, тушёнка, компот из сухофруктов</div>
+                            </div>
+                            <div class="description-text">
+                                <p><strong>История экспоната:</strong> Сначала туристы ходили с армейскими вещмешками. В 1930-х появился брезентовый рюкзак «Колобок», а в 1950-х — рюкзак «Абалакова». Палатки шили из плотного брезента. Для готовки — вёдра и котелки, воду носили в алюминиевых флягах</p>
+                                <p style="margin-top: 12px;"><strong>Почему в музее туризма?</strong> Крым — не только пляжи, но и горные тропы. Палатка и рюкзак — главные атрибуты крымских походов. С таким снаряжением тысячи туристов познавали красоту полуострова.</p>
+                            </div>
+                            <div class="audio-player">
+                                <div style="margin-bottom: 12px;">
+                                    <i class="fas fa-headphones" style="margin-right: 8px;"></i>
+                                    <strong>Аудиогид</strong>
+                                </div>
+                                <audio controls style="width: 70%;">
+                                    <source src="audio/backpack.mp3" type="audio/mpeg">
+                                </audio>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Блок фотографий внизу -->
+                <div class="photos">
+                    <h2>Фото музея</h2>
+                    <div class="exhibits-grid">
+                        <div class="exhibit-card">
+                            <img src="img/backpack1.jpg" alt="">
+                            <h3></h3>
+                            <p></p>
+                        </div>
+                        <div class="exhibit-card">
+                            <img src="img/backpack2.jpg" alt="">
+                            <h3></h3>
+                            <p></p>
+                        </div>
+                        <div class="exhibit-card">
+                            <img src="img/backpack3.jpg" alt="">
+                            <h3></h3>
+                            <p></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hotspots"> 
+                <h2> <a><i class="fas fa-map-pin"></i>  Интерактивные детали</a></h2>
+            </div>
+            <div class="hotspots-section">
+                <p>Нажми на любую деталь, чтобы узнать о ней подробнее</p>
+                <div class="hotspots-grid" id="hotspotsGrid">
+                    <div class="hotspot-card" data-detail="body">
+                        <h4>Армейский вещмешок</h4>
+                        <p>До появления «Колобка» туристы использовали армейские вещевые мешки. Они были неудобными для длительных переходов, но именно с них начиналась история советского туристического снаряжения.</p>
+                    </div>
+                    <div class="hotspot-card" data-detail="handles">
+                        <h4>Душа советского похода</h4>
+                        <p>Гитара была обязательным атрибутом — ни один уважающий себя поход не обходился без песен у костра. Именно так родился жанр авторской песни. Высоцкий, Визбор, Окуджава — их песни знал каждый турист и пел их под гитару, сидя у огня.</p>
+                    </div>
+                    <div class="hotspot-card" data-detail="neck">
+                        <h4>Котелок-трансформер</h4>
+                        <p>Армейский котелок был настоящей находкой. В самом котелке варили суп и кашу, а крышку использовали как сковороду. Одна посудина — и полноценный обед готов!.</p>
+                    </div>
+                    <div class="hotspot-card" data-detail="bottom">
+                        <h4>Спальник «Куколка»</h4>
+                        <p>В 1970-х годах советские туристы спали в ватных спальниках, которые из-за своей формы и больших деревянных пуговиц прозвали «куколкой». Они были очень тяжелыми, но теплыми. С появлением в 80-х годах спальников на молнии с синтетическим утеплителем это был настоящий прорыв и предмет гордости владельца.</p>
+                    </div>
+                </div>
+                <div id="hotspotDetail">
+                    <span class="info-icon">ⓘ</span>
+                </div>
+            </div>
+
+            <div class="info-card" style="text-align: center; background: #886F6E; color: white; margin-left: 30px; margin-right: 28px;">
+                <i class="fas fa-question-circle" style="font-size: 32px; margin-bottom: 12px;"></i>
+                <h3 style="color: white; font-family: 'SC Jurere'; font-size: 23px; font-weight: 100;">А знаешь ли ты?</h3>
+                <p style="font-family: 'Times New Roman', Times, serif; font-size: 20px; font-weight: 100; margin-top: 8px;">Сколько килограммов весило полное туристическое снаряжение советского туриста?</p>
+                <div style="display: flex; gap: 12px; justify-content: center; margin-top: 16px; flex-wrap: wrap;">
+                    <span class="tag" style="background: rgba(255,255,255,0.2); cursor: pointer;" onclick="alert('Попробуй еще раз! Слишком мало для палатки, рюкзака и еды.')">8–10 кг</span>
+                    <span class="tag" style="background: rgba(255,255,255,0.2); cursor: pointer;" onclick="alert('🎉 Правильно! Полная выкладка советского туриста весила 15–20 кг! Сюда входила брезентовая палатка, рюкзак «Абалакова», спальник, котелок, фляга и запас еды на несколько дней.')">15–20 кг</span>
+                    <span class="tag" style="background: rgba(255,255,255,0.2); cursor: pointer;" onclick="alert('Перебор! Советские туристы не носили с собой такие тяжести.')">30–40 кг</span>
+                </div>
+            </div>
+        </section>
+    </div>
+            
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div>
+                <h3>🏺 Музей туризма</h3>
+                <p>Школа "Лингвист"<br>Часы работы: пн-пт 10:00–16:00</p>
+            </div>
+            <div>
+                <h3>Контакты</h3>
+                <p><i class="fas fa-envelope"></i> museum@school1.ru</p>
+                <p><i class="fab fa-vk"></i> vk.com/school1_museum</p>
+                <p><i class="fas fa-qrcode"></i> Сканируй QR-коды у экспонатов</p>
+            </div>
+            <div>
+                <h3>Адрес</h3>
+                <p>Улица Крымских партизан, 15</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Скрипты -->
+<script>
+    // ========== 3D МОДЕЛИ С ПЕРЕКЛЮЧЕНИЕМ ==========
+    
+    // Список моделей с информацией для каждой
+    const models = [
+        { 
+            src: "3d-models/backpack.glb", 
+            name: "Туристический рюкзак",
+        },
+        { 
+            src: "3d-models/tent.glb", 
+            name: "Палатка туристическая",
+            
+        },
+        { 
+            src: "3d-models/cauldron.glb", 
+            name: "Походный котелок",
+        },
+        { 
+            src: "3d-models/guitar.glb", 
+            name: "Гитара ",
+        }
+    ];
+    
+    let currentIndex = 0;
+    const modelViewer = document.getElementById('model-viewer');
+    const prevModelBtn = document.getElementById('prevBtn');
+    const nextModelBtn = document.getElementById('nextBtn');
+    const currentModelSpan = document.getElementById('currentModel');
+    const totalModelsSpan = document.getElementById('totalModels');
+    const modelDots = document.getElementById('modelDots');
+    const modelNameSpan = document.getElementById('modelName');
+    
+    // Устанавливаем общее количество моделей
+    if (totalModelsSpan) {
+        totalModelsSpan.textContent = models.length;
+    }
+    
+    // Создаем индикаторы (точки)
+    function createDots() {
+        if (!modelDots) return;
+        modelDots.innerHTML = '';
+        models.forEach((model, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (index === currentIndex) dot.classList.add('active');
+            dot.addEventListener('click', () => switchToModel(index));
+            modelDots.appendChild(dot);
+        });
+    }
+    
+    // Обновление информации в правой колонке
+    function updateInfo(model) {
+        const infoName = document.getElementById('infoName');
+        const infoDate = document.getElementById('infoDate');
+        const infoMaterial = document.getElementById('infoMaterial');
+        const infoFeatures = document.getElementById('infoFeatures');
+        const infoDonor = document.getElementById('infoDonor');
+        const infoDescription = document.getElementById('infoDescription');
+        
+        if (infoName) infoName.innerHTML = model.infoName;
+        if (infoDate) infoDate.innerHTML = model.infoDate;
+        if (infoMaterial) infoMaterial.innerHTML = model.infoMaterial;
+        if (infoFeatures) infoFeatures.innerHTML = model.infoFeatures;
+        if (infoDonor) infoDonor.innerHTML = model.infoDonor;
+        if (infoDescription) {
+            infoDescription.innerHTML = `
+                <p><strong>История экспоната:</strong> ${model.infoDescription}</p>
+                <p style="margin-top: 12px;"><strong>Почему в музее туризма?</strong> Этот предмет — важная часть истории туризма, показывающая, как развивалась туристическая культура.</p>
+            `;
+        }
+    }
+    
+    // Переключение на конкретную модель с плавной анимацией
+    function switchToModel(index) {
+        if (index < 0) index = 0;
+        if (index >= models.length) index = models.length - 1;
+        if (currentIndex === index) return;
+        
+        currentIndex = index;
+        const model = models[currentIndex];
+        
+        if (modelViewer) {
+            modelViewer.classList.add('fade-out');
+        }
+        
+        setTimeout(() => {
+            if (modelViewer) {
+                modelViewer.src = model.src;
+            }
+            if (modelNameSpan) {
+                modelNameSpan.innerHTML = model.name;
+            }
+            updateInfo(model);
+            if (currentModelSpan) {
+                currentModelSpan.textContent = currentIndex + 1;
+            }
+            document.querySelectorAll('.dot').forEach((dot, i) => {
+                if (i === currentIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+            setTimeout(() => {
+                if (modelViewer) {
+                    modelViewer.classList.remove('fade-out');
+                }
+            }, 50);
+        }, 300);
+    }
+    
+    function nextModel() {
+        const newIndex = currentIndex + 1;
+        if (newIndex < models.length) {
+            switchToModel(newIndex);
+        } else {
+            switchToModel(0);
+        }
+    }
+    
+    function prevModel() {
+        const newIndex = currentIndex - 1;
+        if (newIndex >= 0) {
+            switchToModel(newIndex);
+        } else {
+            switchToModel(models.length - 1);
+        }
+    }
+    
+    if (prevModelBtn) {
+        prevModelBtn.addEventListener('click', prevModel);
+    }
+    if (nextModelBtn) {
+        nextModelBtn.addEventListener('click', nextModel);
+    }
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            prevModel();
+            e.preventDefault();
+        } else if (e.key === 'ArrowRight') {
+            nextModel();
+            e.preventDefault();
+        }
+    });
+    
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    if (modelViewer) {
+        modelViewer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        modelViewer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const swipeDistance = touchEndX - touchStartX;
+            if (Math.abs(swipeDistance) > 50) {
+                if (swipeDistance > 0) {
+                    prevModel();
+                } else {
+                    nextModel();
+                }
+            }
+        });
+    }
+    
+    createDots();
+    switchToModel(0);
+    
+    let autoRotateTimeout;
+    if (modelViewer) {
+        modelViewer.addEventListener('mouseenter', () => {
+            modelViewer.autoRotate = false;
+        });
+        modelViewer.addEventListener('mouseleave', () => {
+            autoRotateTimeout = setTimeout(() => {
+                modelViewer.autoRotate = true;
+            }, 1000);
+        });
+    }
+    
+    // ========== ГАЛЕРЕЯ ФОТО (ОДИН РАЗ!) ==========
+    // Проверяем, не создано ли уже модальное окно
+    if (!document.querySelector('.modal')) {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <span class="close-modal">&times;</span>
+            <div class="modal-content">
+                <img class="modal-img" id="modalImg" src="" alt="">
+            </div>
+            <div class="modal-nav">
+                <button class="modal-nav-btn gallery-prev">❮</button>
+                <button class="modal-nav-btn gallery-next">❯</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        const modalImg = document.getElementById('modalImg');
+        const closeModal = document.querySelector('.close-modal');
+        const galleryPrevBtn = document.querySelector('.gallery-prev');
+        const galleryNextBtn = document.querySelector('.gallery-next');
+
+        let currentPhotoIndex = 0;
+        const photos = document.querySelectorAll('.exhibit-card img');
+        const photoArray = Array.from(photos).map(img => img.src);
+
+        if (photos.length > 0) {
+            photos.forEach((photo, index) => {
+                photo.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    currentPhotoIndex = index;
+                    modal.style.display = 'block';
+                    if (modalImg) modalImg.src = photoArray[currentPhotoIndex];
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+        }
+
+        function closeModalFunc() {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        if (closeModal) {
+            closeModal.addEventListener('click', closeModalFunc);
+        }
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModalFunc();
+        });
+
+        function showPrevPhoto() {
+            if (photoArray.length > 0) {
+                currentPhotoIndex = (currentPhotoIndex - 1 + photoArray.length) % photoArray.length;
+                if (modalImg) modalImg.src = photoArray[currentPhotoIndex];
+            }
+        }
+
+        function showNextPhoto() {
+            if (photoArray.length > 0) {
+                currentPhotoIndex = (currentPhotoIndex + 1) % photoArray.length;
+                if (modalImg) modalImg.src = photoArray[currentPhotoIndex];
+            }
+        }
+
+        if (galleryPrevBtn) {
+            galleryPrevBtn.addEventListener('click', showPrevPhoto);
+        }
+        if (galleryNextBtn) {
+            galleryNextBtn.addEventListener('click', showNextPhoto);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (modal.style.display === 'block') {
+                if (e.key === 'Escape') closeModalFunc();
+                if (e.key === 'ArrowLeft') showPrevPhoto();
+                if (e.key === 'ArrowRight') showNextPhoto();
+            }
+        });
+    }
+    
+    // ========== МОБИЛЬНОЕ МЕНЮ ==========
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
+    const closeMenuBtn = document.getElementById('closeMenuBtn');
+    
+    function openMenu() {
+        if (mobileMenu) mobileMenu.classList.add('open');
+        if (menuOverlay) menuOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeMenu() {
+        if (mobileMenu) mobileMenu.classList.remove('open');
+        if (menuOverlay) menuOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    if (menuBtn) {
+        menuBtn.addEventListener('click', openMenu);
+    }
+    if (closeMenuBtn) {
+        closeMenuBtn.addEventListener('click', closeMenu);
+    }
+    if (menuOverlay) {
+        menuOverlay.addEventListener('click', closeMenu);
+    }
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileMenu && mobileMenu.classList.contains('open')) {
+            closeMenu();
+        }
+    });
+    
+    const dropdownToggle = document.querySelector('.has-dropdown');
+    const mobileDropdown = document.querySelector('.mobile-dropdown');
+    
+    if (dropdownToggle && mobileDropdown) {
+        dropdownToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            mobileDropdown.classList.toggle('open');
+            const icon = this.querySelector('i');
+            if (icon) {
+                icon.style.transform = mobileDropdown.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0)';
+            }
+        });
+    }
+    
+    // ========== ИНТЕРАКТИВНЫЕ ТОЧКИ (HOTSPOTS) ==========
+    const hotspots = document.querySelectorAll('.hotspot-card');
+    const detailDiv = document.getElementById('hotspotDetail');
+    
+    if (hotspots.length > 0 && detailDiv) {
+        hotspots.forEach(hotspot => {
+            hotspot.addEventListener('click', function() {
+                hotspots.forEach(h => h.classList.remove('active'));
+                this.classList.add('active');
+                const title = this.querySelector('h4').innerText;
+                const description = this.querySelector('p').innerHTML;
+                detailDiv.style.display = 'block';
+                detailDiv.innerHTML = `
+                    <strong><i class="fas fa-info-circle"></i> ${title}</strong>
+                    <p style="margin-top: 8px;">${description}</p>
+                `;
+            });
+        });
+    }
+</script>
+</body>
+</html>
