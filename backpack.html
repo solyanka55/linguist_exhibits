@@ -17,8 +17,8 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/navigation.css">
     <link rel="stylesheet" href="css/hotspot.css">
-           <link rel="stylesheet" href="css/adaptation.css">
-
+    <link rel="stylesheet" href="css/adaptation.css">
+    <link rel="manifest" href="/linguist_exhibits/manifest.json">
     
     <style>
         /* Дополнительные стили для элегантного переключения моделей */
@@ -773,5 +773,16 @@
         });
     }
 </script>
+<script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/linguist_exhibits/sw.js')
+                .then(registration => {
+                    console.log('✅ Service Worker зарегистрирован:', registration);
+                })
+                .catch(error => {
+                    console.log('❌ Ошибка регистрации Service Worker:', error);
+                });
+        }
+ </script>
 </body>
 </html>
