@@ -17,6 +17,7 @@
         <link rel="stylesheet" href="css/navigation.css">
         <link rel="stylesheet" href="css/hotspot.css">
         <link rel="stylesheet" href="css/adaptation.css">
+        <link rel="manifest" href="/linguist_exhibits/manifest.json">
     </head>
     <body>
     <!-- Оверлей для затемнения фона -->
@@ -403,6 +404,17 @@
             if (e.key === 'ArrowRight') showNextPhoto();
         }
     });
+</script>
+<script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/linguist_exhibits/sw.js')
+                .then(registration => {
+                    console.log('✅ Service Worker зарегистрирован:', registration);
+                })
+                .catch(error => {
+                    console.log('❌ Ошибка регистрации Service Worker:', error);
+                });
+        }
 </script>
 </body>
 </html>
