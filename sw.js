@@ -1,4 +1,7 @@
-const CACHE_NAME = 'museum-cache-v1'; // Хранилище для файлов
+// Название кэша — меняйте его при обновлении файлов
+const CACHE_NAME = 'museum-cache-v3'; 
+
+// Список файлов для кэширования (убедитесь, что пути верны)
 const urlsToCache = [
   '/linguist_exhibits/',
   '/linguist_exhibits/index.html',
@@ -42,12 +45,89 @@ const urlsToCache = [
   '/linguist_exhibits/fonts/SC Jurere.ttf'
 ];
 
+// --- УСТАНОВКА: Кэшируем файлы ---
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
+  console.log('[SW] Установка...');
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('[SW] Кэширование файлов...');
+      return cache.addAll(urlsToCache);
+    }).then(() => self.skipWaiting())
+  );
 });
 
+// --- АКТИВАЦИЯ: Удаляем старый кэш ---
+self.addEventListener('activate', event => {
+  console.log('[SW] Активация...');
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cache => {
+          if (cache !== CACHE_NAME) {
+            console.log('[SW] Удаление старого кэша:', cache);
+            return caches.delete(cache);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
+});
+
+// --- ПЕРЕХВАТ ЗАПРОСОВ: ОБРАБОТКА АУДИО И 3D ---
 self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+  const isAudio = event.request.url.match(/\.(mp3|wav|ogg)$/i);
+  const isModel = event.request.url.match(/\.glb$/i);
+
+  // --- 1. Обработка АУДИО и 3D МОДЕЛЕЙ (с поддержкой Range-запросов) ---
+  if (isAudio || isModel) {
+    console.log('[SW] Перехват аудио/модели:', event.request.url);
+    
+    event.respondWith(
+      caches.open(CACHE_NAME).then(async cache => {
+        // Пытаемся найти файл в кэше
+        const cachedResponse = await cache.match(event.request);
+        
+        if (cachedResponse) {
+          console.log('[SW] Найдено в кэше:', event.request.url);
+          // Обновляем кэш в фоне (Stale-while-revalidate)
+          event.waitUntil(
+            fetch(event.request).then(networkResponse => {
+              if (networkResponse && networkResponse.status === 200) {
+                cache.put(event.request, networkResponse.clone());
+              }
+            }).catch(() => {})
+          );
+          return cachedResponse;
+        }
+        
+        // Если нет в кэше — загружаем из сети
+        console.log('[SW] Нет в кэше, загружаем из сети');
+        const networkResponse = await fetch(event.request);
+        if (networkResponse && networkResponse.status === 200) {
+          cache.put(event.request, networkResponse.clone());
+        }
+        return networkResponse;
+      })
+    );
+    return;
+  }
+
+  // --- 2. Обработка остальных файлов (стандартная) ---
   event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
+    caches.match(event.request).then(cachedResponse => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+      return fetch(event.request).then(networkResponse => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return networkResponse;
+      });
+    })
   );
 });
